@@ -4,16 +4,17 @@ import { useMountedState, useUpdateEffect } from 'react-use';
 
 import { TEmotionProps } from '@types';
 
-import { Placeholder, StyledImg } from './Img.styled';
+import { Loader, Placeholder, StyledImg } from './Img.styled';
 
 type TImg = {
   src: string;
   alt?: string;
   imageStyle?: TEmotionProps;
   className?: string;
+  hasPlaceholder?: boolean;
 };
 
-export const Img = ({ src, alt = '', ...rest }: TImg) => {
+export const Img = ({ src, alt = '', hasPlaceholder, ...rest }: TImg) => {
   const isMounted = useMountedState();
   const { ref, inView } = useInView();
   const [isLoaded, setLoaded] = useState(false);
@@ -52,8 +53,12 @@ export const Img = ({ src, alt = '', ...rest }: TImg) => {
     if (inView) setDetected(true);
   }, [inView]);
 
-  if (!isLoaded || isError) {
-    return <Placeholder {...{ ...rest, ref }} />;
+  if (!isLoaded) {
+    return <Loader {...{ ...rest, hasPlaceholder, ref }} />;
+  }
+
+  if (isLoaded && isError) {
+    return <Placeholder {...{ ...rest, hasPlaceholder, ref }} />;
   }
 
   return <StyledImg {...{ ...rest, src, alt }} />;

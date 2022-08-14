@@ -3,7 +3,8 @@ import styled from '@emotion/styled';
 export const StyledHeader = styled.header`
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
+  min-height: 100px;
   width: 100%;
   padding: 28px 16px;
   user-select: none;
@@ -14,11 +15,14 @@ export const StyledHeader = styled.header`
 `;
 
 export const Logo = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 60px;
-  cursor: pointer;
+  height: 100px;
+  width: 100%;
 `;
 
 export const RightPane = styled.div`

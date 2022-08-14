@@ -1,9 +1,7 @@
-import Link from 'next/link';
 import { useCallback } from 'react';
 import { useMedia } from 'react-use';
 
 import { Button, Img } from 'components';
-import { truncateHash } from 'utils';
 import { media } from 'styled';
 import { useAuth } from 'hooks';
 
@@ -20,21 +18,18 @@ export const Header = () => {
 
   return (
     <StyledHeader>
-      <Link href="/">
-        <Logo>
-          <Img
-            src="/logo.svg"
-            imageStyle={{ width: isMobile ? 60 : 160, objectFit: 'contain' }}
-          />
-        </Logo>
-      </Link>
+      <Logo>
+        <Img src="/logo.svg" imageStyle={{ width: isMobile ? 160 : 260 }} />
+      </Logo>
       <RightPane>
-        <Button
-          onClick={handleClickConnectWallet}
-          buttonStyle={{ opacity: account ? 0.5 : 1 }}
-        >
-          {account ? truncateHash(account) : 'Connect Wallet'}
-        </Button>
+        {!account && (
+          <Button
+            onClick={handleClickConnectWallet}
+            buttonStyle={{ opacity: account ? 0.5 : 1 }}
+          >
+            Connect Wallet
+          </Button>
+        )}
       </RightPane>
     </StyledHeader>
   );

@@ -24,6 +24,7 @@ const getButtonBackground = (
   variant: TButtonVariant,
   theme: Theme
 ) => {
+  if (variant === 'secondary') return 'none';
   if (disabled) return theme.colors.black;
   return theme.colors.black;
 };
@@ -33,6 +34,7 @@ const getButtonHoverBackground = (
   variant: TButtonVariant,
   theme: Theme
 ) => {
+  if (variant === 'secondary') return 'none';
   if (disabled) return theme.colors.black;
   return 'rgba(0, 0, 0, 0.7)';
 };
@@ -42,12 +44,13 @@ const getButtonHoverColor = (
   variant: TButtonVariant,
   theme: Theme
 ) => {
+  if (variant === 'secondary') return theme.colors.secondary;
   if (disabled) return theme.colors.white;
   return theme.colors.white;
 };
 
 const getButtonColor = (variant: TButtonVariant, theme: Theme) => {
-  if (variant === 'secondary') return theme.colors.white;
+  if (variant === 'secondary') return theme.colors.black;
   return theme.colors.white;
 };
 
@@ -71,8 +74,7 @@ export const StyledButton = styled.button<TStyledButton>`
   padding: ${({ size }) => getButtonPadding(size)};
   background: ${({ variant, theme, disabled }) =>
     getButtonBackground(disabled, variant, theme)};
-  border: 1px solid ${({ theme }) => theme.colors.black};
-  border-radius: 12px;
+  border: none;
   line-height: 16px;
   color: ${({ variant, theme, isLoading }) =>
     !isLoading ? getButtonColor(variant, theme) : 'transparent'};

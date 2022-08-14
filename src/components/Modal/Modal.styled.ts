@@ -27,7 +27,6 @@ export const StyledModal = styled.div<{
   flex-direction: column;
   width: 90%;
   max-width: ${({ maxWidth }) => maxWidth || '550px'};
-  border-radius: 12px;
   padding-top: ${({ withCloseIcon }) => (withCloseIcon ? 40 : 0)}px;
   background: ${({ theme }) => theme.colors.white};
   box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.05);

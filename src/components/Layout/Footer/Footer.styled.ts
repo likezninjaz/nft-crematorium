@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 export const StyledFooter = styled.footer`
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
   flex: 0 0 auto;
   padding: 22px 40px;
   user-select: none;

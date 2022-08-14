@@ -1,11 +1,9 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useToggle } from 'react-use';
-import { css } from '@emotion/react';
-import { AbiItem } from 'web3-utils';
+import { Alchemy } from 'alchemy-sdk';
 
-import { Button, Img, Input, Typography } from 'components';
+import { Button, Img, Typography } from 'components';
 import { useAuth } from 'hooks';
-import ERC721Abi from 'contracts/ERC721.json';
 
 import {
   BurnWrapper,
@@ -17,68 +15,17 @@ import {
 import { WarningModal } from './components';
 import { TNft } from './types';
 
+const ALCHEMY_CONFIG = {
+  apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
+};
+
 export const Home = () => {
-  const { account, web3 } = useAuth();
+  const { account } = useAuth();
   const [isWarningModalOpen, setWarningModalOpen] = useToggle(false);
   const [nfts, setNfts] = useState<Array<TNft>>([]);
-  const [selectedContract, setSelectedContract] = useState({
-    address: '',
-    name: '',
-    symbol: '',
-  });
   const [selectedNfts, setSelectedNfts] = useState([]);
-
-  const handleChange = useCallback(
-    async e => {
-      if (web3.utils.isAddress(e.target.value)) {
-        setSelectedContract(e.target.value);
-        const contract = new web3.eth.Contract(
-          ERC721Abi as AbiItem | AbiItem[],
-          e.target.value,
-          {
-            from: account,
-          }
-        );
-
-        const contractName = await contract.methods.name().call();
-        const contractSymbol = await contract.methods.symbol().call();
-        setSelectedContract({
-          address: e.target.value,
-          name: contractName,
-          symbol: contractSymbol,
-        });
-
-        const nftBalance = await contract.methods.balanceOf(account).call();
-
-        if (nftBalance > 0) {
-          let newNFts = [];
-
-          for (let i = 0; i < nftBalance; i++) {
-            const tokenId = await contract.methods
-              .tokenOfOwnerByIndex(account, i)
-              .call();
-            const tokenUri: string = await contract.methods
-              .tokenURI(tokenId)
-              .call();
-            const ipfsData = await fetch(
-              tokenUri.replace('ipfs://', '	https://ipfs.io/ipfs/')
-            ); // TODO: check the url
-            const ipfsDataJson = await ipfsData.json();
-            newNFts = newNFts.concat({
-              tokenId,
-              name: ipfsDataJson.name,
-              image: ipfsDataJson.image.replace(
-                'ipfs://',
-                '	https://ipfs.io/ipfs/'
-              ), // TODO: check the url
-            });
-            setNfts(newNFts);
-          }
-        }
-      }
-    },
-    [account, web3]
-  );
+  const [pageKey, setPageKey] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSelectNft = useCallback(
     (nft: TNft) => () => {
@@ -93,15 +40,43 @@ export const Home = () => {
     [selectedNfts]
   );
 
-  const handleChangeContractClick = useCallback(() => {
-    setSelectedContract({
-      address: '',
-      name: '',
-      symbol: '',
-    });
-    setNfts([]);
-    setSelectedNfts([]);
-  }, []);
+  const getNfts = useCallback(async () => {
+    setLoading(true);
+    try {
+      const alchemy = new Alchemy(ALCHEMY_CONFIG);
+      const ownedNftsResponse = await alchemy.nft.getNftsForOwner(
+        '0x6527939C107C507e22Cec1F6740719a26A642Ec1', // TODO: replace to the account address
+        pageKey ? { pageKey } : {}
+      );
+
+      if (ownedNftsResponse.ownedNfts?.length > 0) {
+        setPageKey(ownedNftsResponse.pageKey);
+        let newNFts = [];
+
+        for (let i = 0; i < ownedNftsResponse.ownedNfts.length - 1; i++) {
+          const nft = ownedNftsResponse.ownedNfts[i];
+          if (nft.rawMetadata && Object.keys(nft.rawMetadata).length > 0) {
+            newNFts = newNFts.concat({
+              tokenId: nft.tokenId,
+              name: nft.title,
+              image: nft.media[0]?.gateway,
+            });
+          }
+        }
+        setNfts([...nfts, ...newNFts]);
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  }, [nfts, pageKey]);
+
+  useEffect(() => {
+    if (account) getNfts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [account, pageKey]);
 
   return (
     <StyledHome hasFooter={selectedNfts.length > 0}>
@@ -111,80 +86,77 @@ export const Home = () => {
             variant="h1"
             typographyStyle={{ marginTop: 10, cursor: 'default' }}
           >
-            Welcome to
-            <br />
-            NFT Crematorium
+            {loading ? (
+              <>Loading...</>
+            ) : (
+              <>
+                Welcome to
+                <br />
+                NFT Crematorium
+                <br />
+                <Typography
+                  variant="h2"
+                  typographyStyle={{ marginTop: 10, cursor: 'default' }}
+                >
+                  {account
+                    ? 'Seems that you don`t have any NFT yet. Go and buy some NFT somewhere to cremate them'
+                    : 'Connect your wallet to start creamate your NFTs'}
+                </Typography>
+              </>
+            )}
           </Typography>
-          <Typography
-            variant="text"
-            typographyStyle={({ theme }) =>
-              css`
-                margin-top: 20px;
-                color: ${theme.colors.secondary};
-                cursor: default;
-              `
-            }
-          >
-            Paste your NFT contract address to start the creamtion
-          </Typography>
-          {account && (
-            <Input
-              placeholder="0x..."
-              onChange={handleChange}
-              inputStyle={{ marginTop: 20, minWidth: 420 }}
-            />
-          )}
         </>
       )}
-      {nfts.length > 0 && (
+      {nfts.length > 0 && !loading && (
         <>
           <Typography variant="h2" typographyStyle={{ marginTop: 20 }}>
-            Select NFT of {selectedContract.name} for cremation or{' '}
-            <strong
-              style={{ fontWeight: 'bold' }}
-              onClick={handleChangeContractClick}
-            >
-              change the contract
-            </strong>
+            Select NFTs for cremation
           </Typography>
           <NftsWrapper>
-            {nfts.map(nft => (
-              <NftsItem
-                key={nft.tokenId}
-                selected={selectedNfts.includes(nft)}
-                onClick={handleSelectNft(nft)}
-              >
-                <ImageWrapper selected={selectedNfts.includes(nft)}>
-                  <Img src={nft.image} />
-                </ImageWrapper>
-                <Typography
-                  typographyStyle={{
-                    textAlign: 'left',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                  }}
-                >
-                  {nft.name || `${selectedContract.symbol} #${nft.tokenId}`}
-                </Typography>
-              </NftsItem>
-            ))}
+            {nfts.map(
+              (nft, index) =>
+                nft.image && (
+                  <NftsItem
+                    key={index}
+                    selected={selectedNfts.includes(nft)}
+                    onClick={handleSelectNft(nft)}
+                  >
+                    <ImageWrapper selected={selectedNfts.includes(nft)}>
+                      <Img hasPlaceholder src={nft.image} />
+                    </ImageWrapper>
+                    <Typography
+                      typographyStyle={{
+                        textAlign: 'left',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                      }}
+                    >
+                      {nft.name}
+                    </Typography>
+                  </NftsItem>
+                )
+            )}
           </NftsWrapper>
         </>
       )}
       {selectedNfts.length > 0 && (
         <BurnWrapper>
           <Typography>
-            You selected {selectedNfts.length}/{nfts.length}{' '}
-            {selectedContract.symbol}. Click "Cremate" to pay respect!
+            You selected {selectedNfts.length}/{nfts.length}. Click "Cremate" to
+            pay respect!
           </Typography>
-          <Button onClick={() => setWarningModalOpen(true)}>Creamate</Button>
+          <div>
+            <Button variant="secondary" onClick={() => setSelectedNfts([])}>
+              Cancel
+            </Button>
+            <Button onClick={() => setWarningModalOpen(true)}>Creamate</Button>
+          </div>
         </BurnWrapper>
       )}
 
       <WarningModal
         isOpen={isWarningModalOpen}
-        selectedContract={selectedContract.address}
         selectedNfts={selectedNfts}
         onClose={() => setWarningModalOpen(false)}
       />

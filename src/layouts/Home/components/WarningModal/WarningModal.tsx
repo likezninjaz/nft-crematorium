@@ -14,14 +14,12 @@ import { Wrapper } from './WarningModal.styled';
 type TWarningModal = {
   isOpen: boolean;
   onClose: () => void;
-  selectedContract: string;
   selectedNfts: Array<TNft>;
 };
 
 export const WarningModal = ({
   isOpen,
   onClose,
-  selectedContract,
   selectedNfts,
 }: TWarningModal) => {
   const [isSuccessfulModalOpen, setSuccessfulModalOpen] = useToggle(false);
@@ -30,34 +28,27 @@ export const WarningModal = ({
 
   const handleConfirmClick = useCallback(async () => {
     setIsLoading(true);
-    const contract = new web3.eth.Contract(
-      ERC721Abi as AbiItem | AbiItem[],
-      selectedContract,
-      {
-        from: account,
-      }
-    );
+    // const contract = new web3.eth.Contract(
+    //   ERC721Abi as AbiItem | AbiItem[],
+    //   selectedContract,
+    //   {
+    //     from: account,
+    //   }
+    // );
 
-    for (let i = 0; i < selectedNfts.length; i++) {
-      await contract.methods
-        .transferFrom(
-          account,
-          '0xc8BB5586CfDaa13f3041694B999fc7Ad4f5fbE7D',
-          Number(selectedNfts[i].tokenId)
-        )
-        .send();
-    }
+    // for (let i = 0; i < selectedNfts.length; i++) {
+    //   await contract.methods
+    //     .transferFrom(
+    //       account,
+    //       '0xc8BB5586CfDaa13f3041694B999fc7Ad4f5fbE7D',
+    //       Number(selectedNfts[i].tokenId)
+    //     )
+    //     .send();
+    // }
     setSuccessfulModalOpen(true);
     setIsLoading(false);
     onClose();
-  }, [
-    account,
-    onClose,
-    selectedContract,
-    selectedNfts,
-    setSuccessfulModalOpen,
-    web3,
-  ]);
+  }, [onClose, setSuccessfulModalOpen]);
 
   return (
     <>
@@ -68,13 +59,18 @@ export const WarningModal = ({
             Once confirmed, your NFTs will be burned. To revive them you will
             have to perform additional actions with associated costs.
           </Typography>
-          <Button
-            onClick={handleConfirmClick}
-            isLoading={isLoading}
-            buttonStyle={{ marginTop: 20 }}
-          >
-            Confirm
-          </Button>
+          <div>
+            <Button variant="secondary" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button
+              onClick={handleConfirmClick}
+              isLoading={isLoading}
+              buttonStyle={{ marginTop: 20 }}
+            >
+              Confirm
+            </Button>
+          </div>
         </Wrapper>
       </Modal>
       <SuccessfulModal
