@@ -45,6 +45,7 @@ export const Home = () => {
     setLoading(true);
     try {
       const alchemy = new Alchemy(ALCHEMY_CONFIG);
+      console.log(account);
       const ownedNftsResponse = await alchemy.nft.getNftsForOwner(
         account,
         pageKey ? { pageKey } : {}
@@ -73,7 +74,7 @@ export const Home = () => {
     } finally {
       setLoading(false);
     }
-  }, [addToEnd, pageKey]);
+  }, [account, addToEnd, pageKey]);
 
   useEffect(() => {
     if (account) getNfts();

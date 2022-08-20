@@ -29,7 +29,7 @@ export const WarningModal = ({
   const [isLoading, setIsLoading] = useState(false);
 
   const handleConfirmClick = useCallback(async () => {
-    setIsLoading(true)
+    setIsLoading(true);
 
     for (let i = 0; i < selectedNfts.length; i++) {
       const contract = new web3.eth.Contract(
