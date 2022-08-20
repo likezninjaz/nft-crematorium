@@ -8,6 +8,10 @@ export const StyledFooter = styled.footer`
   padding: 22px 40px;
   user-select: none;
 
+  a {
+    font-weight: bold;
+  }
+
   @media (max-width: ${({ theme }) => theme.media.mobile}) {
     justify-content: center;
   }

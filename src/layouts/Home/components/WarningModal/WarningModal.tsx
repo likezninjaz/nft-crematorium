@@ -11,6 +11,8 @@ import { TNft } from '../../types';
 
 import { Wrapper } from './WarningModal.styled';
 
+const CREMATORIUM_ADDRESS = '0xc8BB5586CfDaa13f3041694B999fc7Ad4f5fbE7D';
+
 type TWarningModal = {
   isOpen: boolean;
   onClose: () => void;
@@ -27,28 +29,29 @@ export const WarningModal = ({
   const [isLoading, setIsLoading] = useState(false);
 
   const handleConfirmClick = useCallback(async () => {
-    setIsLoading(true);
-    // const contract = new web3.eth.Contract(
-    //   ERC721Abi as AbiItem | AbiItem[],
-    //   selectedContract,
-    //   {
-    //     from: account,
-    //   }
-    // );
+    setIsLoading(true)
 
-    // for (let i = 0; i < selectedNfts.length; i++) {
-    //   await contract.methods
-    //     .transferFrom(
-    //       account,
-    //       '0xc8BB5586CfDaa13f3041694B999fc7Ad4f5fbE7D',
-    //       Number(selectedNfts[i].tokenId)
-    //     )
-    //     .send();
-    // }
+    for (let i = 0; i < selectedNfts.length; i++) {
+      const contract = new web3.eth.Contract(
+        ERC721Abi as AbiItem | AbiItem[],
+        selectedNfts[i].contractAddress,
+        {
+          from: account,
+        }
+      );
+
+      await contract.methods
+        .transferFrom(
+          account,
+          CREMATORIUM_ADDRESS, // TODO: change to the contract method call
+          Number(selectedNfts[i].tokenId)
+        )
+        .send();
+    }
     setSuccessfulModalOpen(true);
     setIsLoading(false);
     onClose();
-  }, [onClose, setSuccessfulModalOpen]);
+  }, [account, onClose, selectedNfts, setSuccessfulModalOpen, web3]);
 
   return (
     <>

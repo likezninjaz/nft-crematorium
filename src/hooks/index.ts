@@ -5,3 +5,5 @@ export { useClickOutside } from './use-click-outside';
 export { useConvertETHToUSD } from './use-convert-eth-to-usd';
 export { useItems } from './use-items';
 export { useAuth } from './use-auth';
+export { useDidUnmount } from './use-did-unmount';
+export { useWindowScrollMore } from './use-window-scroll-more';

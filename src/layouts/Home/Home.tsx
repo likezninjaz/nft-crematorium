@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useToggle } from 'react-use';
-import { Alchemy } from 'alchemy-sdk';
+import { Alchemy, Network } from 'alchemy-sdk';
 
-import { Button, Img, Typography } from 'components';
-import { useAuth } from 'hooks';
+import { Button, Img, Loader, Typography } from 'components';
+import { useAuth, useItems } from 'hooks';
 
 import {
   BurnWrapper,
@@ -17,12 +17,13 @@ import { TNft } from './types';
 
 const ALCHEMY_CONFIG = {
   apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
+  network: Network.ETH_MAINNET,
 };
 
 export const Home = () => {
   const { account } = useAuth();
   const [isWarningModalOpen, setWarningModalOpen] = useToggle(false);
-  const [nfts, setNfts] = useState<Array<TNft>>([]);
+  const [nfts, { addToEnd }] = useItems<TNft>([]);
   const [selectedNfts, setSelectedNfts] = useState([]);
   const [pageKey, setPageKey] = useState('');
   const [loading, setLoading] = useState(false);
@@ -45,7 +46,7 @@ export const Home = () => {
     try {
       const alchemy = new Alchemy(ALCHEMY_CONFIG);
       const ownedNftsResponse = await alchemy.nft.getNftsForOwner(
-        '0x6527939C107C507e22Cec1F6740719a26A642Ec1', // TODO: replace to the account address
+        '0x6434d19c2e6788e53aa3ec5c6fc0112b1852e554',
         pageKey ? { pageKey } : {}
       );
 
@@ -60,10 +61,11 @@ export const Home = () => {
               tokenId: nft.tokenId,
               name: nft.title,
               image: nft.media[0]?.gateway,
+              contractAddress: nft.contract.address,
             });
           }
         }
-        setNfts([...nfts, ...newNFts]);
+        addToEnd(newNFts);
       }
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -71,12 +73,12 @@ export const Home = () => {
     } finally {
       setLoading(false);
     }
-  }, [nfts, pageKey]);
+  }, [addToEnd, pageKey]);
 
   useEffect(() => {
     if (account) getNfts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [account, pageKey]);
+  }, [account]);
 
   return (
     <StyledHome hasFooter={selectedNfts.length > 0}>
@@ -87,7 +89,7 @@ export const Home = () => {
             typographyStyle={{ marginTop: 10, cursor: 'default' }}
           >
             {loading ? (
-              <>Loading...</>
+              <Loader />
             ) : (
               <>
                 Welcome to
@@ -98,18 +100,24 @@ export const Home = () => {
                   variant="h2"
                   typographyStyle={{ marginTop: 10, cursor: 'default' }}
                 >
-                  {account
-                    ? 'Seems that you don`t have any NFT yet. Go and buy some NFT somewhere to cremate them'
-                    : 'Connect your wallet to start creamate your NFTs'}
+                  {account ? (
+                    <>
+                      Seems that you don't have any NFT yet.
+                      <br />
+                      Buy some NFT somewhere to cremate them
+                    </>
+                  ) : (
+                    'Connect your wallet to start creamate your NFTs'
+                  )}
                 </Typography>
               </>
             )}
           </Typography>
         </>
       )}
-      {nfts.length > 0 && !loading && (
+      {nfts.length > 0 && (
         <>
-          <Typography variant="h2" typographyStyle={{ marginTop: 20 }}>
+          <Typography variant="text" typographyStyle={{ marginTop: 20 }}>
             Select NFTs for cremation
           </Typography>
           <NftsWrapper>

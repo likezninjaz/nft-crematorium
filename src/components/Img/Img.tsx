@@ -16,7 +16,7 @@ type TImg = {
 
 export const Img = ({ src, alt = '', hasPlaceholder, ...rest }: TImg) => {
   const isMounted = useMountedState();
-  const { ref, inView } = useInView();
+  const { ref, inView } = useInView({ rootMargin: '200px' });
   const [isLoaded, setLoaded] = useState(false);
   const [isError, setError] = useState(false);
   const [detected, setDetected] = useState(false);

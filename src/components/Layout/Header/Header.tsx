@@ -1,15 +1,12 @@
 import { useCallback } from 'react';
-import { useMedia } from 'react-use';
 
-import { Button, Img } from 'components';
-import { media } from 'styled';
+import { Button } from 'components';
 import { useAuth } from 'hooks';
 
 import { Logo, RightPane, StyledHeader } from './Header.styled';
 
 export const Header = () => {
   const { account, login, logout } = useAuth();
-  const isMobile = useMedia(`(max-width: ${media.mobile})`);
 
   const handleClickConnectWallet = useCallback(
     async () => await (account ? logout() : login()),
@@ -18,9 +15,7 @@ export const Header = () => {
 
   return (
     <StyledHeader>
-      <Logo>
-        <Img src="/logo.svg" imageStyle={{ width: isMobile ? 160 : 260 }} />
-      </Logo>
+      <Logo src="/logo.svg" />
       <RightPane>
         {!account && (
           <Button

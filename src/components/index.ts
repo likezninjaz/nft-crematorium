@@ -6,3 +6,4 @@ export { Input } from './Input';
 export { Typography } from './Typography';
 export { Modal } from './Modal';
 export { Portal } from './Portal';
+export { Loader } from './Loader';

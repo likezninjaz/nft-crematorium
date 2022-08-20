@@ -58,8 +58,8 @@ export const SuccessfulModal = ({
           </TwitterShareButton>
         </ShareWrapper>
         <NftsWrapper>
-          {selectedNfts.map(selectedNft => (
-            <NftsItem key={selectedNft.tokenId} selected={true}>
+          {selectedNfts.map((selectedNft, index) => (
+            <NftsItem key={index} selected={true}>
               <ImageWrapper selected={true}>
                 <Img src="./urn.jpeg" />
               </ImageWrapper>
