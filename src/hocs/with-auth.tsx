@@ -31,7 +31,7 @@ const providerOptions = {
     options: {
       infuraId: process.env.NEXT_PUBLIC_INFURA_PROJECT_ID,
     },
-  }
+  },
 };
 
 export const AuthContext = createContext<TAuthContext | null>(null);
@@ -137,16 +137,7 @@ export const withAuth = <
       });
       setWeb3Modal(web3ModalInstance);
 
-      if (web3ModalInstance.cachedProvider) {
-        try {
-          login(web3ModalInstance);
-        } catch (e) {
-          // show error
-          return;
-        }
-      } else {
-        push(HOME_PAGE_ROUTE);
-      }
+      login(web3ModalInstance);
     });
 
     return (
