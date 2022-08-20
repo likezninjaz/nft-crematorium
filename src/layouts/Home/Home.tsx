@@ -46,7 +46,7 @@ export const Home = () => {
     try {
       const alchemy = new Alchemy(ALCHEMY_CONFIG);
       const ownedNftsResponse = await alchemy.nft.getNftsForOwner(
-        '0x6434d19c2e6788e53aa3ec5c6fc0112b1852e554',
+        account,
         pageKey ? { pageKey } : {}
       );
 
