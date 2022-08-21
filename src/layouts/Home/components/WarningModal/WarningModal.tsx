@@ -11,7 +11,7 @@ import { TNft } from '../../types';
 
 import { Wrapper } from './WarningModal.styled';
 
-const CREMATORIUM_ADDRESS = '0xc8BB5586CfDaa13f3041694B999fc7Ad4f5fbE7D';
+const CREMATORIUM_ADDRESS = '0x18443891dd90C683388B65b02436346cDA2ed42f';
 
 type TWarningModal = {
   isOpen: boolean;

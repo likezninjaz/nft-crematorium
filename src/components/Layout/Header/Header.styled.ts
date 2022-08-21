@@ -13,10 +13,6 @@ export const StyledHeader = styled.header`
   box-shadow: rgb(0 0 0 / 8%) 0px 4px 15px;
   background: ${({ theme }) => theme.colors.white};
   z-index: 2;
-
-  @media (max-width: ${({ theme }) => theme.media.mobile}) {
-    padding: 28px 28px 56px;
-  }
 `;
 
 export const Logo = styled.img`

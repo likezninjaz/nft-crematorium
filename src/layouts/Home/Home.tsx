@@ -45,7 +45,6 @@ export const Home = () => {
     setLoading(true);
     try {
       const alchemy = new Alchemy(ALCHEMY_CONFIG);
-      console.log(account);
       const ownedNftsResponse = await alchemy.nft.getNftsForOwner(
         account,
         pageKey ? { pageKey } : {}
@@ -55,7 +54,7 @@ export const Home = () => {
         setPageKey(ownedNftsResponse.pageKey);
         let newNFts = [];
 
-        for (let i = 0; i < ownedNftsResponse.ownedNfts.length - 1; i++) {
+        for (let i = 0; i < ownedNftsResponse.ownedNfts.length; i++) {
           const nft = ownedNftsResponse.ownedNfts[i];
           if (nft.rawMetadata && Object.keys(nft.rawMetadata).length > 0) {
             newNFts = newNFts.concat({
