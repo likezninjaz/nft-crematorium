@@ -30,6 +30,18 @@ export default class Document extends NextDocument {
           />
           <meta property="twitter:image" content="/logo.png" />
           <link rel="shortcut icon" href="/favicon.png" />
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${process.env.NEXT_PUBLIC_GA_KEY}', {
+              page_path: window.location.pathname,
+            });
+          `,
+            }}
+          />
         </Head>
         <body>
           <Main />
