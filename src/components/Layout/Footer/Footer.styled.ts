@@ -5,7 +5,7 @@ export const StyledFooter = styled.footer`
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
-  padding: 22px 40px;
+  padding: 15px 40px 5px;
   user-select: none;
 
   a {

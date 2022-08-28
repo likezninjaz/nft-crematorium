@@ -11,8 +11,6 @@ import { TNft } from '../../types';
 
 import { Wrapper } from './WarningModal.styled';
 
-const CREMATORIUM_ADDRESS = '0x18443891dd90C683388B65b02436346cDA2ed42f';
-
 type TWarningModal = {
   isOpen: boolean;
   onClose: () => void;
@@ -43,7 +41,7 @@ export const WarningModal = ({
       await contract.methods
         .transferFrom(
           account,
-          CREMATORIUM_ADDRESS, // TODO: change to the contract method call
+          process.env.NEXT_PUBLIC_CREMATORIUM_ADDRESS, // TODO: change to the contract method call
           Number(selectedNfts[i].tokenId)
         )
         .send();

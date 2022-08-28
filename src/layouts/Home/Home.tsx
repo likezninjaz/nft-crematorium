@@ -4,6 +4,7 @@ import { Alchemy, Network } from 'alchemy-sdk';
 
 import { Button, Img, Loader, Typography } from 'components';
 import { useAuth, useItems } from 'hooks';
+import { isProduction } from 'utils';
 
 import {
   BurnWrapper,
@@ -17,7 +18,7 @@ import { TNft } from './types';
 
 const ALCHEMY_CONFIG = {
   apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
-  network: Network.ETH_MAINNET,
+  network: isProduction() ? Network.ETH_MAINNET : Network.ETH_RINKEBY,
 };
 
 export const Home = () => {
@@ -26,7 +27,7 @@ export const Home = () => {
   const [nfts, { addToEnd }] = useItems<TNft>([]);
   const [selectedNfts, setSelectedNfts] = useState([]);
   const [pageKey, setPageKey] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const handleSelectNft = useCallback(
     (nft: TNft) => () => {
@@ -59,7 +60,7 @@ export const Home = () => {
           if (nft.rawMetadata && Object.keys(nft.rawMetadata).length > 0) {
             newNFts = newNFts.concat({
               tokenId: nft.tokenId,
-              name: nft.title,
+              name: nft.title || 'N/A',
               image: nft.media[0]?.gateway,
               contractAddress: nft.contract.address,
             });
@@ -88,29 +89,20 @@ export const Home = () => {
             variant="h1"
             typographyStyle={{ marginTop: 10, cursor: 'default' }}
           >
-            {loading ? (
+            {loading && account ? (
               <Loader />
             ) : (
-              <>
-                Welcome to
-                <br />
-                NFT Crematorium
-                <br />
-                <Typography
-                  variant="h2"
-                  typographyStyle={{ marginTop: 10, cursor: 'default' }}
-                >
-                  {account ? (
-                    <>
-                      Seems that you don't have any NFT yet.
-                      <br />
-                      Buy some NFT somewhere to cremate them
-                    </>
-                  ) : (
-                    'Connect your wallet to start creamate your NFTs'
-                  )}
-                </Typography>
-              </>
+              <Typography variant="h2" typographyStyle={{ cursor: 'default' }}>
+                {account ? (
+                  <>
+                    Seems that you don't have any NFT yet.
+                    <br />
+                    Buy some NFT somewhere to cremate them
+                  </>
+                ) : (
+                  'Connect your wallet to start creamate your NFTs'
+                )}
+              </Typography>
             )}
           </Typography>
         </>
