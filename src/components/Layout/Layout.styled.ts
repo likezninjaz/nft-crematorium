@@ -8,7 +8,7 @@ export const StyledLayout = styled(animated.div)`
   position: relative;
   display: flex;
   flex-direction: column;
-  height: calc(100% - 17px);
+  height: 100%;
 `;
 
 export const Content = styled.div<{ contentStyle?: TEmotionProps }>`

@@ -11,6 +11,11 @@ export const StyledHome = styled.div<{ hasFooter: boolean }>`
   margin: auto;
   padding: ${({ hasFooter }) => (hasFooter ? '0 20px 100px' : '0 20px')};
   text-align: center;
+  user-select: none;
+
+  @media (max-width: ${({ theme }) => theme.media.mobile}) {
+    padding: ${({ hasFooter }) => (hasFooter ? '0 5px 150px' : '0 5px')};
+  }
 `;
 
 export const Introducing = styled(Typography)`
@@ -43,6 +48,11 @@ export const NftsItem = styled.div<{ selected?: boolean }>`
   border-radius: 4px;
   opacity: ${({ selected }) => (selected ? 1 : 0.4)};
   cursor: pointer;
+
+  @media (max-width: ${({ theme }) => theme.media.mobile}) {
+    width: 100%;
+    height: 400px;
+  }
 `;
 
 export const ImageWrapper = styled.div<{ selected: boolean }>`
@@ -63,6 +73,10 @@ export const ImageWrapper = styled.div<{ selected: boolean }>`
     background: ${({ theme }) => theme.colors.black};
     transform: rotate(-45deg);
   }
+
+  @media (max-width: ${({ theme }) => theme.media.mobile}) {
+    height: 350px;
+  }
 `;
 
 export const BurnWrapper = styled.div`
@@ -76,4 +90,12 @@ export const BurnWrapper = styled.div`
   padding: 20px;
   background: ${({ theme }) => theme.colors.white};
   box-shadow: 0 2px 4px 2px rgb(34 36 38 / 12%);
+
+  @media (max-width: ${({ theme }) => theme.media.mobile}) {
+    flex-direction: column;
+
+    & button {
+      margin-top: 20px;
+    }
+  }
 `;

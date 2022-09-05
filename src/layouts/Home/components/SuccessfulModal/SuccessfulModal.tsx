@@ -30,9 +30,9 @@ export const SuccessfulModal = ({
   return (
     <Modal {...{ isOpen, onClose }} maxWidth="700px">
       <Wrapper>
-        <Typography variant="h2">Success</Typography>
+        <Typography variant="h2">Cremated</Typography>
         <Typography variant="text2" typographyStyle={{ marginTop: 10 }}>
-          Your NFTs have been successfully cremated. Share this event on social
+          Your NFTs have been successfully cremated. Share this on social
           networks!
         </Typography>
         <ShareWrapper>

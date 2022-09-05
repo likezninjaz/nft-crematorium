@@ -10,7 +10,7 @@ const Page404 = () => (
       height: '100%',
     }}
   >
-    404 - Page Not Found
+    Oops, page not found
   </Typography>
 );
 

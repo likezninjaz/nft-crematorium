@@ -142,7 +142,7 @@ export const withAuth = <
 
     return (
       <AuthContext.Provider value={ctx}>
-        <WrappedComponent {...(rest as unknown as P)} />;
+        <WrappedComponent {...(rest as unknown as P)} />
       </AuthContext.Provider>
     );
   };

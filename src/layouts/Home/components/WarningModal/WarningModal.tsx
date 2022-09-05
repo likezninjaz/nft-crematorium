@@ -57,8 +57,9 @@ export const WarningModal = ({
         <Wrapper>
           <Typography variant="h2">Warning</Typography>
           <Typography variant="text2" typographyStyle={{ marginTop: 10 }}>
-            Once confirmed, your NFTs will be burned. To revive them you will
-            have to perform additional actions with associated costs.
+            Once confirmed, your NFTs will be burned.
+            <br />
+            You can revive them in the future.
           </Typography>
           <div>
             <Button variant="secondary" onClick={onClose}>

@@ -1,10 +1,12 @@
-import { StyledFooter } from './Footer.styled';
+import Link from 'next/link';
+
+import { TERMS_PAGE_ROUTE } from 'routes';
+
+import { Copyright, StyledFooter } from './Footer.styled';
 
 export const Footer = () => (
   <StyledFooter>
-    Created by&nbsp;
-    <a href="https://github.com/likezninjaz" target="__blank">
-      Evgenii Studitskikh
-    </a>
+    <Copyright>© 2022 NFT Crematorium</Copyright>
+    <Link href={TERMS_PAGE_ROUTE}>Terms of Service</Link>
   </StyledFooter>
 );

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useToggle } from 'react-use';
+import Head from 'next/head';
 import { Alchemy, Network } from 'alchemy-sdk';
 
 import { Button, Img, Loader, Typography } from 'components';
@@ -82,84 +83,101 @@ export const Home = () => {
   }, [account]);
 
   return (
-    <StyledHome hasFooter={selectedNfts.length > 0}>
-      {nfts.length === 0 && (
-        <>
-          <Typography
-            variant="h1"
-            typographyStyle={{ marginTop: 10, cursor: 'default' }}
-          >
-            {loading && account ? (
-              <Loader />
-            ) : (
-              <Typography variant="h2" typographyStyle={{ cursor: 'default' }}>
-                {account ? (
-                  <>
-                    Seems that you don't have any NFT yet.
-                    <br />
-                    Buy some NFT somewhere to cremate them
-                  </>
-                ) : (
-                  'Connect your wallet to start creamate your NFTs'
-                )}
-              </Typography>
-            )}
-          </Typography>
-        </>
-      )}
-      {nfts.length > 0 && (
-        <>
-          <Typography variant="text" typographyStyle={{ marginTop: 20 }}>
-            Select NFTs for cremation
-          </Typography>
-          <NftsWrapper>
-            {nfts.map(
-              (nft, index) =>
-                nft.image && (
-                  <NftsItem
-                    key={index}
-                    selected={selectedNfts.includes(nft)}
-                    onClick={handleSelectNft(nft)}
-                  >
-                    <ImageWrapper selected={selectedNfts.includes(nft)}>
-                      <Img hasPlaceholder src={nft.image} />
-                    </ImageWrapper>
-                    <Typography
-                      typographyStyle={{
-                        textAlign: 'left',
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                      }}
+    <>
+      <Head>
+        <title>NFT Creamtorium</title>
+      </Head>
+      <StyledHome hasFooter={selectedNfts.length > 0}>
+        {nfts.length === 0 && (
+          <>
+            <Typography
+              variant="h1"
+              typographyStyle={{ marginTop: 10, cursor: 'default' }}
+            >
+              {loading && account ? (
+                <Loader />
+              ) : (
+                <Typography
+                  variant="h2"
+                  typographyStyle={{ cursor: 'default' }}
+                >
+                  {account ? (
+                    <>
+                      Seems that you don't have any NFT yet.
+                      <br />
+                      <a
+                        href="https://opensea.io/"
+                        target="_blank"
+                        style={{ textDecoration: 'underline' }}
+                      >
+                        Get some NFTs
+                      </a>{' '}
+                      to cremate them.
+                    </>
+                  ) : (
+                    'Connect your wallet to start the cremation of your NFTs'
+                  )}
+                </Typography>
+              )}
+            </Typography>
+          </>
+        )}
+        {nfts.length > 0 && (
+          <>
+            <Typography variant="text" typographyStyle={{ marginTop: 20 }}>
+              Select NFTs for cremation
+            </Typography>
+            <NftsWrapper>
+              {nfts.map(
+                (nft, index) =>
+                  nft.image && (
+                    <NftsItem
+                      key={index}
+                      selected={selectedNfts.includes(nft)}
+                      onClick={handleSelectNft(nft)}
                     >
-                      {nft.name}
-                    </Typography>
-                  </NftsItem>
-                )
-            )}
-          </NftsWrapper>
-        </>
-      )}
-      {selectedNfts.length > 0 && (
-        <BurnWrapper>
-          <Typography>
-            You selected {selectedNfts.length}/{nfts.length}. Click "Cremate" to
-            pay respect!
-          </Typography>
-          <div>
-            <Button variant="secondary" onClick={() => setSelectedNfts([])}>
-              Cancel
-            </Button>
-            <Button onClick={() => setWarningModalOpen(true)}>Creamate</Button>
-          </div>
-        </BurnWrapper>
-      )}
+                      <ImageWrapper selected={selectedNfts.includes(nft)}>
+                        <Img hasPlaceholder src={nft.image} />
+                      </ImageWrapper>
+                      <Typography
+                        typographyStyle={{
+                          textAlign: 'left',
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                        }}
+                      >
+                        {nft.name}
+                      </Typography>
+                    </NftsItem>
+                  )
+              )}
+            </NftsWrapper>
+          </>
+        )}
+        {selectedNfts.length > 0 && (
+          <BurnWrapper>
+            <Typography>
+              You selected {selectedNfts.length}/{nfts.length}. Click "Cremate"
+              to start the creamation!
+            </Typography>
+            <div>
+              <Button variant="secondary" onClick={() => setSelectedNfts([])}>
+                Cancel
+              </Button>
+              <Button onClick={() => setWarningModalOpen(true)}>
+                Creamate
+              </Button>
+            </div>
+          </BurnWrapper>
+        )}
 
-      <WarningModal
-        isOpen={isWarningModalOpen}
-        selectedNfts={selectedNfts}
-        onClose={() => setWarningModalOpen(false)}
-      />
-    </StyledHome>
+        <WarningModal
+          isOpen={isWarningModalOpen}
+          selectedNfts={selectedNfts}
+          onClose={() => setWarningModalOpen(false)}
+        />
+      </StyledHome>
+    </>
   );
 };
