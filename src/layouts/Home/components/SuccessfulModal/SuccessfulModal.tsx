@@ -27,6 +27,8 @@ export const SuccessfulModal = ({
     .map(nft => nft.name)
     .join(', ')} NFT${selectedNfts.length > 1 ? 's' : ''}`;
 
+  //TODO: generaet Urn, example => https://jsfiddle.net/vnmtLjw8/171/
+
   return (
     <Modal {...{ isOpen, onClose }} maxWidth="700px">
       <Wrapper>

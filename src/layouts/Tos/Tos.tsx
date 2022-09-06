@@ -7,7 +7,7 @@ import { Container } from './Tos.styled';
 export const Tos = () => (
   <>
     <Head>
-      <title>NFT Creamtorium: Terms of service</title>
+      <title>NFT Creamatorium: Terms of service</title>
     </Head>
     <Container>
       <Typography variant="h1">TERMS OF SERVICE</Typography>
