@@ -62,18 +62,6 @@ export const ImageWrapper = styled.div<{ selected: boolean }>`
   box-shadow: ${({ selected }) =>
     selected ? 'rgb(0 0 0 / 8%) 0px 4px 15px' : 'none'};
 
-  &::after {
-    content: '';
-    position: absolute;
-    display: ${({ selected }) => (selected ? 'block' : 'none')};
-    bottom: 0;
-    right: -50px;
-    width: 250px;
-    height: 30px;
-    background: ${({ theme }) => theme.colors.black};
-    transform: rotate(-45deg);
-  }
-
   @media (max-width: ${({ theme }) => theme.media.mobile}) {
     height: 350px;
   }

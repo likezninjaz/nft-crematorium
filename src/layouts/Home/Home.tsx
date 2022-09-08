@@ -25,7 +25,7 @@ const ALCHEMY_CONFIG = {
 export const Home = () => {
   const { account } = useAuth();
   const [isWarningModalOpen, setWarningModalOpen] = useToggle(false);
-  const [nfts, { addToEnd }] = useItems<TNft>([]);
+  const [nfts, { addToEnd, clear }] = useItems<TNft>([]);
   const [selectedNfts, setSelectedNfts] = useState([]);
   const [pageKey, setPageKey] = useState('');
   const [loading, setLoading] = useState(true);
@@ -44,6 +44,7 @@ export const Home = () => {
   );
 
   const getNfts = useCallback(async () => {
+    clear();
     setLoading(true);
     try {
       const alchemy = new Alchemy(ALCHEMY_CONFIG);
@@ -75,7 +76,7 @@ export const Home = () => {
     } finally {
       setLoading(false);
     }
-  }, [account, addToEnd, pageKey]);
+  }, [account, addToEnd, clear, pageKey]);
 
   useEffect(() => {
     if (account) getNfts();
@@ -141,10 +142,8 @@ export const Home = () => {
                       </ImageWrapper>
                       <Typography
                         typographyStyle={{
+                          marginTop: 7,
                           textAlign: 'left',
-                          whiteSpace: 'nowrap',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
                         }}
                       >
                         {nft.name}
@@ -176,6 +175,7 @@ export const Home = () => {
           isOpen={isWarningModalOpen}
           selectedNfts={selectedNfts}
           onClose={() => setWarningModalOpen(false)}
+          onCremate={() => getNfts()}
         />
       </StyledHome>
     </>

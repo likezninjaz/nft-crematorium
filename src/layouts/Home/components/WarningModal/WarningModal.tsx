@@ -15,12 +15,14 @@ type TWarningModal = {
   isOpen: boolean;
   onClose: () => void;
   selectedNfts: Array<TNft>;
+  onCremate: () => void;
 };
 
 export const WarningModal = ({
   isOpen,
   onClose,
   selectedNfts,
+  onCremate,
 }: TWarningModal) => {
   const [isSuccessfulModalOpen, setSuccessfulModalOpen] = useToggle(false);
   const { account, web3 } = useAuth();
@@ -38,18 +40,20 @@ export const WarningModal = ({
         }
       );
 
-      await contract.methods
-        .transferFrom(
-          account,
-          process.env.NEXT_PUBLIC_CREMATORIUM_ADDRESS, // TODO: change to the contract method call
-          Number(selectedNfts[i].tokenId)
-        )
-        .send();
+      // await contract.methods
+      //   .transferFrom(
+      //     account,
+      //     process.env.NEXT_PUBLIC_CREMATORIUM_ADDRESS, // TODO: change to the contract method call
+      //     Number(selectedNfts[i].tokenId)
+      //   )
+      //   .send();
     }
+
+    onCremate();
     setSuccessfulModalOpen(true);
     setIsLoading(false);
     onClose();
-  }, [account, onClose, selectedNfts, setSuccessfulModalOpen, web3]);
+  }, [account, onClose, onCremate, selectedNfts, setSuccessfulModalOpen, web3]);
 
   return (
     <>
