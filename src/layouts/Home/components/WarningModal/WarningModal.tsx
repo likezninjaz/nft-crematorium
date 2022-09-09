@@ -40,6 +40,8 @@ export const WarningModal = ({
         }
       );
 
+      // TODO: add the creamation animation based on https://codepen.io/jkantner/pen/gKRKKb
+
       // await contract.methods
       //   .transferFrom(
       //     account,

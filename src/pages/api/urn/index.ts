@@ -1,7 +1,10 @@
 import { createCanvas, loadImage } from 'canvas';
 
+import { urnImageBase64 } from './urnImage';
+import { urnBackgroundBase64 } from './urnBackground';
+
 const handler = async (req, res) => {
-  if (!req.body.nftUrl) {
+  if (!req.body.nftUrl || !req.body.nftTitle) {
     res.status(500).json();
   }
 
@@ -9,22 +12,24 @@ const handler = async (req, res) => {
     const canvas = createCanvas(800, 800);
     const ctx = canvas.getContext('2d');
     ctx.globalCompositeOperation = 'overlay';
-
-    const imageURL =
-      'https://thumbs.dreamstime.com/b/funerary-urn-cremation-ceremony-object-icon-funerary-urn-cremation-ceremony-object-icon-dust-vase-vector-flat-style-141576646.jpg';
-    const urnImage = await loadImage(imageURL);
+    const urnImage = await loadImage(urnImageBase64);
     ctx.drawImage(urnImage, 0, 0, 800, 800);
 
     const nftImage = await loadImage(req.body.nftUrl);
     ctx.drawImage(nftImage, 0, 0, 800, 800);
 
-    // ctx.globalCompositeOperation = 'multiply';
+    ctx.globalCompositeOperation = 'source-over';
 
-    // // TODO: Put the frame
+    const urnBackground = await loadImage(urnBackgroundBase64);
+    ctx.drawImage(urnBackground, 0, 0, 800, 800);
 
-    // ctx.font = '50px Tahoma';
-    // ctx.textAlign = 'center';
-    // ctx.fillText('23.12.2021 - 6.8.2022', canvas.width / 2, canvas.height - 20);
+    ctx.font = '20px Lato';
+    ctx.fillText(
+      `NFT CREMATORIUM / ${req.body.nftTitle.toUpperCase()}`,
+      15,
+      30,
+      canvas.width - 30
+    );
 
     const data = canvas.toDataURL();
     const arr = data.split(',');

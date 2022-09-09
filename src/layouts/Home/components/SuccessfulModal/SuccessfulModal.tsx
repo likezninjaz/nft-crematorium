@@ -8,6 +8,7 @@ import { ImageWrapper, NftsItem } from '../../Home.styled';
 import { TNft } from '../../types';
 
 import {
+  ButtonWrapper,
   ItemIcon,
   NftsWrapper,
   ShareWrapper,
@@ -35,32 +36,35 @@ export const SuccessfulModal = ({
 
   const generateUrns = useCallback(async () => {
     setIsLoading(true);
+    const generatedUrns = [];
     for (let i = 0; i < selectedNfts.length; i++) {
       if (selectedNfts[i].image) {
         const { data } = await http.post('/api/urn', {
           nftUrl: selectedNfts[i].image,
+          nftTitle: selectedNfts[i].name,
         });
-        setUrns([...urns, data]);
+        generatedUrns.push(data);
       }
     }
+    setUrns(generatedUrns);
     setIsLoading(false);
-  }, [http, selectedNfts, urns]);
+  }, [http, selectedNfts]);
 
   useEffect(() => {
-    setUrns([]);
     generateUrns();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedNfts]);
 
   return (
-    <Modal {...{ isOpen, onClose }} maxWidth="700px">
+    <Modal {...{ isOpen, onClose }} maxWidth="940px">
       <Wrapper>
         <Typography variant="h2">Cremated</Typography>
         <Typography variant="text2" typographyStyle={{ marginTop: 10 }}>
           Your NFT{selectedNfts.length > 1 && 's'} ha
           {selectedNfts.length > 1 ? 've' : 's'} been successfully cremated.
-          Share this on social networks! Also, select urns with the ash of your
-          NFTs to get them as NFT!
+          <br />
+          Share this on social networks! Select urns with the ash to get them as
+          NFT!
         </Typography>
         <ShareWrapper>
           <FacebookShareButton
@@ -106,10 +110,12 @@ export const SuccessfulModal = ({
           )}
         </NftsWrapper>
         {isLoading && <>Generating urns...</>}
-        <Button onClick={() => null} buttonStyle={{ marginTop: 10 }}>
-          Get Urns
-        </Button>
       </Wrapper>
+      <ButtonWrapper>
+        <Button onClick={() => null}>
+          Get Urn{selectedNfts.length > 1 && 's'}
+        </Button>
+      </ButtonWrapper>
     </Modal>
   );
 };
