@@ -102,7 +102,7 @@ export const SuccessfulModal = ({
                       textAlign: 'left',
                     }}
                   >
-                    Urn with "{selectedNft.name || `#${selectedNft.tokenId}`}"
+                    Urn with {selectedNft.name || `#${selectedNft.tokenId}`}{' '}
                     ashes
                   </Typography>
                 </NftsItem>

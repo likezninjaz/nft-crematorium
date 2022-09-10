@@ -5,7 +5,7 @@ export const StyledFooter = styled.footer`
   align-items: center;
   justify-content: space-between;
   flex: 0 0 auto;
-  padding: 15px 40px;
+  padding: 25px;
   user-select: none;
 
   @media (max-width: ${({ theme }) => theme.media.mobile}) {

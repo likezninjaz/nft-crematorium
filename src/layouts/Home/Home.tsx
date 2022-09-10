@@ -86,7 +86,7 @@ export const Home = () => {
   return (
     <>
       <Head>
-        <title>NFT Creamatorium</title>
+        <title>NFT Crematorium</title>
       </Head>
       <StyledHome hasFooter={selectedNfts.length > 0}>
         {nfts.length === 0 && (

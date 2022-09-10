@@ -44,8 +44,8 @@ composer.phar
 .next
 /.phpunit.result.cache
 
-/src/hardhat/artifacts
-/src/hardhat/cache
+/src/contracts/artifacts
+/src/contracts/cache
 
 secrets.json
 
