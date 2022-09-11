@@ -6,7 +6,7 @@ import { TEmotionProps } from '@types';
 
 import { Header } from './Header';
 import { Footer } from './Footer';
-import { Content, StyledLayout } from './Layout.styled';
+import { Background, Content, StyledLayout } from './Layout.styled';
 
 type TLayout = {
   withHeader?: boolean;
@@ -32,6 +32,7 @@ export const Layout = forwardRef<HTMLDivElement, TLayout>(
         <title>NFT Crematorium</title>
       </Head>
       {withHeader && <Header />}
+      <Background src="./background.jpg" />
       <Content {...{ contentStyle }}>{children}</Content>
       {withFooter && <Footer />}
     </StyledLayout>

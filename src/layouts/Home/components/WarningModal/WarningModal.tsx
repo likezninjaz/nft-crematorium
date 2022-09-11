@@ -7,7 +7,7 @@ import { useAuth } from 'hooks';
 import ERC721Abi from 'contracts/ERC721.json';
 
 import { SuccessfulModal } from '../SuccessfulModal';
-import { TNft } from '../../types';
+import { TNft } from '../../../../@types/nft';
 
 import { Wrapper } from './WarningModal.styled';
 

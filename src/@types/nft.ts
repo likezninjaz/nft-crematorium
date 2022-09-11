@@ -3,4 +3,5 @@ export type TNft = {
   name: string;
   image: string;
   contractAddress: string;
+  tokenUri: string;
 };

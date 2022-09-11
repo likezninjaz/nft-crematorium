@@ -6,7 +6,7 @@ export const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 0 30px 30px;
-  margin-bottom: 80px;
+  margin-bottom: 60px;
   text-align: center;
 `;
 
@@ -16,6 +16,31 @@ export const NftsWrapper = styled.div`
   align-items: center;
   text-align: center;
   margin-top: 20px;
+`;
+
+export const NftsItem = styled.div`
+  position: relative;
+  margin: 10px;
+  width: 250px;
+  height: 300px;
+  border-radius: 4px;
+
+  @media (max-width: ${({ theme }) => theme.media.mobile}) {
+    width: 100%;
+    height: 400px;
+  }
+`;
+
+export const ImageWrapper = styled.div<{ selected: boolean }>`
+  position: relative;
+  overflow: hidden;
+  height: 250px;
+  box-shadow: ${({ selected }) =>
+    selected ? 'rgb(0 0 0 / 8%) 0px 4px 15px' : 'none'};
+
+  @media (max-width: ${({ theme }) => theme.media.mobile}) {
+    height: 350px;
+  }
 `;
 
 export const ShareWrapper = styled.div`
@@ -32,7 +57,6 @@ export const ItemIcon = styled.div`
   align-items: center;
   justify-content: center;
   border: 0.5px solid ${({ theme }) => theme.colors.primary};
-  cursor: pointer;
 `;
 
 export const ButtonWrapper = styled.div`

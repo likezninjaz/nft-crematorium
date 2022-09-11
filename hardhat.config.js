@@ -43,6 +43,8 @@ module.exports = {
     spacing: 2,
   },
   etherscan: {
-    apiKey: etherscanApiKey,
+    apiKey: {
+      rinkeby: etherscanApiKey
+    }
   },
 };

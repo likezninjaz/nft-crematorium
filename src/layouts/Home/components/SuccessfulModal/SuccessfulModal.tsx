@@ -1,15 +1,19 @@
 import { useCallback, useEffect, useState } from 'react';
 import { FacebookShareButton, TwitterShareButton } from 'react-share';
+import { AbiItem } from 'web3-utils';
+import { create } from 'ipfs-http-client';
 
 import { Button, Icon, Img, Modal, Typography } from 'components';
 import { getHttpClient } from 'utils';
-
-import { ImageWrapper, NftsItem } from '../../Home.styled';
-import { TNft } from '../../types';
+import { useAuth } from 'hooks';
+import NFTCrematoriumAbi from 'contracts/NFT-Crematorium.json';
+import { TNft } from '@types';
 
 import {
   ButtonWrapper,
+  ImageWrapper,
   ItemIcon,
+  NftsItem,
   NftsWrapper,
   ShareWrapper,
   Wrapper,
@@ -27,15 +31,18 @@ export const SuccessfulModal = ({
   selectedNfts,
 }: TSuccessfulModal) => {
   const http = getHttpClient();
+  const { account, web3 } = useAuth();
   const [urns, setUrns] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const title = `I've just cremated my ${selectedNfts
     .map(nft => nft.name)
     .join(', ')} NFT${selectedNfts.length > 1 ? 's' : ''}`;
 
   const generateUrns = useCallback(async () => {
-    setIsLoading(true);
+    setIsGenerating(true);
     const generatedUrns = [];
     for (let i = 0; i < selectedNfts.length; i++) {
       if (selectedNfts[i].image) {
@@ -47,13 +54,96 @@ export const SuccessfulModal = ({
       }
     }
     setUrns(generatedUrns);
-    setIsLoading(false);
+    setIsGenerating(false);
   }, [http, selectedNfts]);
 
   useEffect(() => {
     generateUrns();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedNfts]);
+
+  const handleGetUrnsClick = useCallback(async () => {
+    setIsLoading(true);
+    const contract = new web3.eth.Contract(
+      NFTCrematoriumAbi as AbiItem | AbiItem[],
+      process.env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS,
+      {
+        from: account,
+      }
+    );
+
+    const PROJECT_ID = process.env.NEXT_PUBLIC_INFURA_IPFS_PROJECT_ID;
+    const PROJECT_SECRET = process.env.NEXT_PUBLIC_INFURA_IPFS_PROJECT_SECRET;
+    const ipfsClient = create({
+      url: 'https://ipfs.infura.io:5001/',
+      headers: {
+        Authorization: 'Basic ' + btoa(PROJECT_ID + ':' + PROJECT_SECRET),
+      },
+    });
+
+    try {
+      const urnsIPFSImages = await Promise.all(
+        urns.map(async (urn, index) => {
+          const arr = urn.split(',');
+          const mime = arr[0].match(/:(.*?);/)[1];
+          const bstr = atob(arr[1]);
+          let n = bstr.length;
+          const u8arr = new Uint8Array(n);
+
+          while (n--) {
+            u8arr[n] = bstr.charCodeAt(n);
+          }
+
+          const file = new File([u8arr], 'urn.png', { type: mime });
+
+          const { path: imagePath } = await ipfsClient.add({ content: file });
+
+          const metaData = {
+            description: `Urn with ashes of ${selectedNfts[index].name}`,
+            image: `https://ipfs.io/ipfs/${imagePath}`,
+            name: `${selectedNfts[index].name} ⚱️`,
+            origin: selectedNfts[index].tokenUri,
+            attributes: [
+              {
+                display_type: 'date',
+                trait_type: 'Cremation date',
+                value: new Date().getTime() / 1000,
+              },
+            ],
+          };
+
+          const { path: metadataPath } = await ipfsClient.add(
+            {
+              content: JSON.stringify(metaData),
+            },
+            {
+              wrapWithDirectory: false,
+            }
+          );
+
+          return metadataPath;
+        })
+      );
+
+      if (urnsIPFSImages.length > 1) {
+        await contract.methods
+          .bulkMint(
+            account,
+            urnsIPFSImages.map(ipfsImage => `https://ipfs.io/ipfs/${ipfsImage}`)
+          )
+          .send();
+      } else {
+        await contract.methods
+          .mint(account, `https://ipfs.io/ipfs/${urnsIPFSImages[0]}`)
+          .send();
+      }
+    } catch (e) {
+      // e
+    } finally {
+      setIsLoading(false);
+      setIsSuccess(true);
+    }
+  }, [account, selectedNfts, urns, web3]);
 
   return (
     <Modal {...{ isOpen, onClose }} maxWidth="940px">
@@ -63,8 +153,9 @@ export const SuccessfulModal = ({
           Your NFT{selectedNfts.length > 1 && 's'} ha
           {selectedNfts.length > 1 ? 've' : 's'} been successfully cremated.
           <br />
-          Share this on social networks! Select urns with the ash to get them as
-          NFT!
+          Share this on social networks! Get NFT of urn
+          {selectedNfts.length > 1 ? 's' : ''} with the ash to revive your NFT
+          for free!
         </Typography>
         <ShareWrapper>
           <FacebookShareButton
@@ -92,7 +183,7 @@ export const SuccessfulModal = ({
           {selectedNfts.map(
             (selectedNft, index) =>
               urns[index] && (
-                <NftsItem key={index} selected={true}>
+                <NftsItem key={index}>
                   <ImageWrapper selected={true}>
                     <Img src={urns[index]} />
                   </ImageWrapper>
@@ -109,12 +200,20 @@ export const SuccessfulModal = ({
               )
           )}
         </NftsWrapper>
-        {isLoading && <>Generating urns...</>}
+        {isGenerating && <>Generating urns...</>}
       </Wrapper>
       <ButtonWrapper>
-        <Button onClick={() => null}>
-          Get Urn{selectedNfts.length > 1 && 's'}
-        </Button>
+        {isSuccess ? (
+          <Typography>Success!!!!</Typography>
+        ) : (
+          <Button
+            onClick={handleGetUrnsClick}
+            disabled={isLoading}
+            isLoading={isLoading}
+          >
+            Get Urn{selectedNfts.length > 1 && 's'}
+          </Button>
+        )}
       </ButtonWrapper>
     </Modal>
   );

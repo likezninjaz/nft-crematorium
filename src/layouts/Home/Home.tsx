@@ -6,6 +6,7 @@ import { Alchemy, Network } from 'alchemy-sdk';
 import { Button, Img, Loader, Typography } from 'components';
 import { useAuth, useItems } from 'hooks';
 import { isProduction } from 'utils';
+import { TNft } from '@types';
 
 import {
   BurnWrapper,
@@ -15,7 +16,6 @@ import {
   StyledHome,
 } from './Home.styled';
 import { WarningModal } from './components';
-import { TNft } from './types';
 
 const ALCHEMY_CONFIG = {
   apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
@@ -59,12 +59,18 @@ export const Home = () => {
 
         for (let i = 0; i < ownedNftsResponse.ownedNfts.length; i++) {
           const nft = ownedNftsResponse.ownedNfts[i];
-          if (nft.rawMetadata && Object.keys(nft.rawMetadata).length > 0) {
+          if (
+            nft.rawMetadata &&
+            Object.keys(nft.rawMetadata).length > 0 &&
+            nft.contract.address.toLowerCase() !==
+              process.env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS.toLowerCase()
+          ) {
             newNFts = newNFts.concat({
               tokenId: nft.tokenId,
               name: nft.title || 'N/A',
               image: nft.media[0]?.gateway,
               contractAddress: nft.contract.address,
+              tokenUri: nft.tokenUri.raw,
             });
           }
         }
