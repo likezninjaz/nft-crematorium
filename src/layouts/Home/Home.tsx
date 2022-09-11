@@ -148,8 +148,11 @@ export const Home = () => {
                       </ImageWrapper>
                       <Typography
                         typographyStyle={{
-                          marginTop: 7,
+                          margin: 12,
                           textAlign: 'left',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
                         }}
                       >
                         {nft.name}
