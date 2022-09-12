@@ -34,7 +34,6 @@ export const SuccessfulModal = ({
   const { account, web3 } = useAuth();
   const [urns, setUrns] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isGenerating, setIsGenerating] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
   const title = `I've just cremated my ${selectedNfts
@@ -42,7 +41,6 @@ export const SuccessfulModal = ({
     .join(', ')} NFT${selectedNfts.length > 1 ? 's' : ''}`;
 
   const generateUrns = useCallback(async () => {
-    setIsGenerating(true);
     const generatedUrns = [];
     for (let i = 0; i < selectedNfts.length; i++) {
       if (selectedNfts[i].image) {
@@ -54,7 +52,6 @@ export const SuccessfulModal = ({
       }
     }
     setUrns(generatedUrns);
-    setIsGenerating(false);
   }, [http, selectedNfts]);
 
   useEffect(() => {
@@ -154,8 +151,8 @@ export const SuccessfulModal = ({
           {selectedNfts.length > 1 ? 've' : 's'} been successfully cremated.
           <br />
           Share this on social networks! Get NFT of urn
-          {selectedNfts.length > 1 ? 's' : ''} with the ash to revive your NFT
-          for free!
+          {selectedNfts.length > 1 ? 's' : ''} with ashes to revive your NFT for
+          free!
         </Typography>
         <ShareWrapper>
           <FacebookShareButton
@@ -180,27 +177,22 @@ export const SuccessfulModal = ({
           </TwitterShareButton>
         </ShareWrapper>
         <NftsWrapper>
-          {selectedNfts.map(
-            (selectedNft, index) =>
-              urns[index] && (
-                <NftsItem key={index}>
-                  <ImageWrapper selected={true}>
-                    <Img src={urns[index]} />
-                  </ImageWrapper>
-                  <Typography
-                    typographyStyle={{
-                      marginTop: 7,
-                      textAlign: 'left',
-                    }}
-                  >
-                    Urn with {selectedNft.name || `#${selectedNft.tokenId}`}{' '}
-                    ashes
-                  </Typography>
-                </NftsItem>
-              )
-          )}
+          {selectedNfts.map((selectedNft, index) => (
+            <NftsItem key={index}>
+              <ImageWrapper selected={true}>
+                <Img src={urns[index]} />
+              </ImageWrapper>
+              <Typography
+                typographyStyle={{
+                  marginTop: 7,
+                  textAlign: 'left',
+                }}
+              >
+                Urn with {selectedNft.name || `#${selectedNft.tokenId}`} ashes
+              </Typography>
+            </NftsItem>
+          ))}
         </NftsWrapper>
-        {isGenerating && <>Generating urns...</>}
       </Wrapper>
       <ButtonWrapper>
         {isSuccess ? (

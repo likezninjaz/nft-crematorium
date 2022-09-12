@@ -12,6 +12,7 @@ const handler = async (req, res) => {
     const canvas = createCanvas(800, 800);
     const ctx = canvas.getContext('2d');
     ctx.globalCompositeOperation = 'overlay';
+
     const urnImage = await loadImage(urnImageBase64);
     ctx.drawImage(urnImage, 0, 0, 800, 800);
 
