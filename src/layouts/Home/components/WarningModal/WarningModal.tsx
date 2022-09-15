@@ -42,13 +42,13 @@ export const WarningModal = ({
 
       // TODO: add the creamation animation based on https://codepen.io/jkantner/pen/gKRKKb
 
-      // await contract.methods
-      //   .transferFrom(
-      //     account,
-      //     process.env.NEXT_PUBLIC_CREMATORIUM_ADDRESS, // TODO: change to the contract method call
-      //     Number(selectedNfts[i].tokenId)
-      //   )
-      //   .send();
+      await contract.methods
+        .transferFrom(
+          account,
+          process.env.NEXT_PUBLIC_CREMATORIUM_ADDRESS,
+          Number(selectedNfts[i].tokenId)
+        )
+        .send();
     }
 
     onCremate();

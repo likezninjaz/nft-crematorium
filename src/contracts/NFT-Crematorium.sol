@@ -11,6 +11,13 @@ contract NFTCrematorium is ERC721URIStorage, ERC721Enumerable, Ownable {
     // Index of the current token for minting
     uint256 private mintIndex = 0;
 
+
+    // Address for fees
+    address payable public feeAddress;
+
+    // Fee value
+    uint256 public feeValue;
+
     /**
      * @notice Emitted when `nftID` has been minted by `minter`.
      *
@@ -28,16 +35,46 @@ contract NFTCrematorium is ERC721URIStorage, ERC721Enumerable, Ownable {
     /**
      * @notice Initializes the contract by setting a `name` and a `symbol` to the token collection.
      */
-    constructor() ERC721("NFT CREMATORIUM", "NFTCREMATORIUM") {}
+    constructor(address payable _feeAddress, uint256 _feeValue) ERC721("NFT CREMATORIUM", "NFTCREMATORIUM") {
+        feeAddress = _feeAddress;
+        feeValue = _feeValue;
+    }
+
+    /**
+     * @notice Sets the fee address and its value
+     *
+     * @param _feeAddress The fee address.
+     * @param _feeValue The fee value.
+     */
+    function setFee(address payable _feeAddress, uint256 _feeValue) external onlyOwner {
+        feeAddress = _feeAddress;
+        feeValue = _feeValue;
+    }
+
+    /**
+     * @notice Get the fee value
+     */
+    function getFeeValue() external view returns (uint256) {
+        return feeValue;
+    }
 
     /**
      * @notice Safely mints tokens and sets their `_tokenURIs`.
      *
      * Emits a {Transfer} event.
      */
-    function bulkMint(address _to, string[] memory _tokenURIs) external {
+    function bulkMint(address _to, string[] memory _tokenURIs) public payable {
+        require(msg.value == feeValue * _tokenURIs.length);
+
         for(uint i = 0; i < _tokenURIs.length; i++) {
-            mint(_to, _tokenURIs[i]);
+            mintIndex = ++mintIndex;
+
+            _safeMint(_to, mintIndex);
+            _setTokenURI(mintIndex, _tokenURIs[i]);
+
+            feeAddress.transfer(msg.value);
+
+            emit Minted(_to, mintIndex, _tokenURIs[i]);
         }
     }
 
@@ -46,13 +83,17 @@ contract NFTCrematorium is ERC721URIStorage, ERC721Enumerable, Ownable {
      *
      * Emits a {Transfer} event.
      */
-    function mint(address to, string memory _tokenURI) public returns (uint256) {
+    function mint(address _to, string memory _tokenURI) public payable returns (uint256) {
+        require(msg.value == feeValue);
+
         mintIndex = ++mintIndex;
 
-        _safeMint(to, mintIndex);
+        _safeMint(_to, mintIndex);
         _setTokenURI(mintIndex, _tokenURI);
 
-        emit Minted(to, mintIndex, _tokenURI);
+        feeAddress.transfer(msg.value);
+
+        emit Minted(_to, mintIndex, _tokenURI);
 
         return mintIndex;
     }

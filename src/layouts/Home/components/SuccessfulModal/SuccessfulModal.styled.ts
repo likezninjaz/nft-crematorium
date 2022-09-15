@@ -59,10 +59,11 @@ export const ItemIcon = styled.div`
   border: 0.5px solid ${({ theme }) => theme.colors.primary};
 `;
 
-export const ButtonWrapper = styled.div`
+export const ButtonWrapper = styled.div<{ isSuccess: boolean }>`
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: ${({ isSuccess }) =>
+    isSuccess ? 'space-between' : 'center'};
   position: absolute;
   bottom: 0;
   left: 0;
@@ -70,4 +71,8 @@ export const ButtonWrapper = styled.div`
   padding: 20px;
   background: ${({ theme }) => theme.colors.white};
   box-shadow: 0 2px 4px 2px rgb(34 36 38 / 12%);
+`;
+
+export const ViewWrapper = styled.div`
+  margin-right: 40p;
 `;

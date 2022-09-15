@@ -32,15 +32,9 @@ export const Home = () => {
 
   const handleSelectNft = useCallback(
     (nft: TNft) => () => {
-      if (selectedNfts.includes(nft)) {
-        setSelectedNfts(
-          selectedNfts.filter(selectedNft => selectedNft !== nft)
-        );
-      } else {
-        setSelectedNfts([...selectedNfts, nft]);
-      }
+      setSelectedNfts([nft]);
     },
-    [selectedNfts]
+    []
   );
 
   const getNfts = useCallback(async () => {
@@ -132,7 +126,7 @@ export const Home = () => {
         {nfts.length > 0 && (
           <>
             <Typography variant="text" typographyStyle={{ marginTop: 20 }}>
-              Select NFTs for cremation
+              Select NFT for cremation
             </Typography>
             <NftsWrapper>
               {nfts.map(
