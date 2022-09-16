@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useToggle } from 'react-use';
 import Head from 'next/head';
-import { Alchemy, Network } from 'alchemy-sdk';
+import { Alchemy } from 'alchemy-sdk';
 
 import { Button, Img, Loader, Typography } from 'components';
 import { useAuth, useItems } from 'hooks';
-import { isProduction } from 'utils';
+import { getAlchemyNetworkByChainId } from 'utils';
 import { TNft } from '@types';
 
 import {
@@ -17,18 +17,18 @@ import {
 } from './Home.styled';
 import { WarningModal } from './components';
 
-const ALCHEMY_CONFIG = {
-  apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
-  network: isProduction() ? Network.ETH_MAINNET : Network.ETH_RINKEBY,
-};
-
 export const Home = () => {
-  const { account } = useAuth();
+  const { account, chainId } = useAuth();
   const [isWarningModalOpen, setWarningModalOpen] = useToggle(false);
   const [nfts, { addToEnd, clear }] = useItems<TNft>([]);
   const [selectedNfts, setSelectedNfts] = useState([]);
   const [pageKey, setPageKey] = useState('');
   const [loading, setLoading] = useState(true);
+
+  const ALCHEMY_CONFIG = {
+    apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
+    network: getAlchemyNetworkByChainId(chainId),
+  };
 
   const handleSelectNft = useCallback(
     (nft: TNft) => () => {
@@ -76,7 +76,7 @@ export const Home = () => {
     } finally {
       setLoading(false);
     }
-  }, [account, addToEnd, clear, pageKey]);
+  }, [ALCHEMY_CONFIG, account, addToEnd, clear, pageKey]);
 
   useEffect(() => {
     if (account) getNfts();
@@ -159,10 +159,7 @@ export const Home = () => {
         )}
         {selectedNfts.length > 0 && (
           <BurnWrapper>
-            <Typography>
-              You selected {selectedNfts.length}/{nfts.length}. Click "Cremate"
-              to start the creamation!
-            </Typography>
+            <Typography>Click "Cremate" to start the creamation!</Typography>
             <div>
               <Button variant="secondary" onClick={() => setSelectedNfts([])}>
                 Cancel

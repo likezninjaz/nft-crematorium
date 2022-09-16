@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { FacebookShareButton, TwitterShareButton } from 'react-share';
 import { AbiItem } from 'web3-utils';
+// eslint-disable-next-line import/no-unresolved
 import { create } from 'ipfs-http-client';
 
 import { Button, Icon, Img, Modal, Typography } from 'components';
