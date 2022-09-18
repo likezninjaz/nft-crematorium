@@ -20,7 +20,7 @@
     "axios": "^0.24.0",
     "body-scroll-lock": "^4.0.0-beta.0",
     "caniuse-lite": "^1.0.30001388",
-    "canvas": "2.6.1",
+    "canvas": "2.8.0",
     "dayjs": "^1.10.7",
     "dotenv": "^10.0.0",
     "dotenv-load": "^2.0.0",
