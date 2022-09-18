@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useToggle } from 'react-use';
 import Head from 'next/head';
-import { Alchemy } from 'alchemy-sdk';
+import Moralis from 'moralis';
 
 import { Button, Img, Loader, Typography } from 'components';
 import { useAuth, useItems } from 'hooks';
-import { getAlchemyNetworkByChainId } from 'utils';
+import { getContractAddressByChainId, getMoralisNetworkByChainId } from 'utils';
 import { TNft } from '@types';
 
 import {
@@ -22,13 +22,7 @@ export const Home = () => {
   const [isWarningModalOpen, setWarningModalOpen] = useToggle(false);
   const [nfts, { addToEnd, clear }] = useItems<TNft>([]);
   const [selectedNfts, setSelectedNfts] = useState([]);
-  const [pageKey, setPageKey] = useState('');
   const [loading, setLoading] = useState(true);
-
-  const ALCHEMY_CONFIG = {
-    apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
-    network: getAlchemyNetworkByChainId(chainId),
-  };
 
   const handleSelectNft = useCallback(
     (nft: TNft) => () => {
@@ -41,30 +35,32 @@ export const Home = () => {
     clear();
     setLoading(true);
     try {
-      const alchemy = new Alchemy(ALCHEMY_CONFIG);
-      const ownedNftsResponse = await alchemy.nft.getNftsForOwner(
-        account,
-        pageKey ? { pageKey } : {}
-      );
+      await Moralis.start({
+        apiKey: process.env.NEXT_PUBLIC_MORALIS_API_KEY,
+      });
+      const response = await Moralis.EvmApi.nft.getWalletNFTs({
+        address: account,
+        chain: getMoralisNetworkByChainId(chainId),
+      });
+      const ownedNfts = response.toJSON();
 
-      if (ownedNftsResponse.ownedNfts?.length > 0) {
-        setPageKey(ownedNftsResponse.pageKey);
+      if (ownedNfts.length > 0) {
         let newNFts = [];
 
-        for (let i = 0; i < ownedNftsResponse.ownedNfts.length; i++) {
-          const nft = ownedNftsResponse.ownedNfts[i];
+        for (let i = 0; i < ownedNfts.length; i++) {
+          const nft = ownedNfts[i];
           if (
-            nft.rawMetadata &&
-            Object.keys(nft.rawMetadata).length > 0 &&
-            nft.contract.address.toLowerCase() !==
-              process.env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS.toLowerCase()
+            nft.metadata &&
+            Object.keys(nft.metadata).length > 0 &&
+            nft.tokenAddress.toLowerCase() !==
+              getContractAddressByChainId(chainId)?.toLowerCase()
           ) {
             newNFts = newNFts.concat({
               tokenId: nft.tokenId,
-              name: nft.title || 'N/A',
-              image: nft.media[0]?.gateway,
-              contractAddress: nft.contract.address,
-              tokenUri: nft.tokenUri.raw,
+              name: nft.metadata.name || 'N/A',
+              image: nft.metadata.image,
+              contractAddress: nft.tokenAddress,
+              tokenUri: nft.tokenUri,
             });
           }
         }
@@ -76,7 +72,7 @@ export const Home = () => {
     } finally {
       setLoading(false);
     }
-  }, [ALCHEMY_CONFIG, account, addToEnd, clear, pageKey]);
+  }, [account, addToEnd, chainId, clear]);
 
   useEffect(() => {
     if (account) getNfts();

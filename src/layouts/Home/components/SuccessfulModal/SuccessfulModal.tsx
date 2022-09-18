@@ -5,7 +5,7 @@ import { AbiItem } from 'web3-utils';
 import { create } from 'ipfs-http-client';
 
 import { Button, Icon, Img, Modal, Typography } from 'components';
-import { getHttpClient } from 'utils';
+import { getContractAddressByChainId, getHttpClient } from 'utils';
 import { useAuth } from 'hooks';
 import NFTCrematoriumAbi from 'contracts/NFT-Crematorium.json';
 import { TNft } from '@types';
@@ -33,7 +33,7 @@ export const SuccessfulModal = ({
   selectedNfts,
 }: TSuccessfulModal) => {
   const http = getHttpClient();
-  const { account, web3 } = useAuth();
+  const { account, web3, chainId } = useAuth();
   const [urns, setUrns] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [mintedNftId, setMintedNftId] = useState(false);
@@ -70,7 +70,7 @@ export const SuccessfulModal = ({
     setIsLoading(true);
     const contract = new web3.eth.Contract(
       NFTCrematoriumAbi as AbiItem | AbiItem[],
-      process.env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS,
+      getContractAddressByChainId(chainId),
       {
         from: account,
       }
@@ -141,12 +141,12 @@ export const SuccessfulModal = ({
             value: feeValue * urnsIPFSImages.length,
           });
       } else {
-        const id = await contract.methods
+        const mintTx = await contract.methods
           .mint(account, `https://ipfs.io/ipfs/${urnsIPFSImages[0]}`)
           .send({
             value: feeValue,
           });
-        setMintedNftId(id);
+        setMintedNftId(mintTx);
       }
     } catch (e) {
       console.log(e);
@@ -154,7 +154,7 @@ export const SuccessfulModal = ({
     } finally {
       setIsLoading(false);
     }
-  }, [account, selectedNfts, urns, web3]);
+  }, [account, chainId, selectedNfts, urns, web3]);
 
   return (
     <Modal {...{ isOpen, onClose }} maxWidth="940px">
@@ -213,7 +213,7 @@ export const SuccessfulModal = ({
           <>
             <ViewWrapper>
               <a
-                href={`https://testnets.opensea.io/collection/${process.env.NEXT_PUBLIC_OPENSEA_CONTRACT_NAME}`}
+                href={`https://opensea.io/assets/ethereum/${getContractAddressByChainId(chainId)}/${mintedNftId}`}
                 target="__blank"
               >
                 <svg
@@ -236,7 +236,7 @@ export const SuccessfulModal = ({
                 </svg>
               </a>
               <a
-                href={`https://testnets.opensea.io/assets/rinkeby/${process.env.NEXT_PUBLIC_OPENSEA_CONTRACT_NAME}/${mintedNftId}`}
+                href={`https://etherscan.io/token/${getContractAddressByChainId(chainId)}?a=${mintedNftId}`}
                 target="__blank"
               >
                 <svg

@@ -37,7 +37,7 @@ export const NftsWrapper = styled.div`
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  margin-top: 20px;
+  margin: 20px 0 50px;
 `;
 
 export const NftsItem = styled.div<{ selected?: boolean }>`

@@ -11,7 +11,6 @@ contract NFTCrematorium is ERC721URIStorage, ERC721Enumerable, Ownable {
     // Index of the current token for minting
     uint256 private mintIndex = 0;
 
-
     // Address for fees
     address payable public feeAddress;
 
@@ -141,6 +140,17 @@ contract NFTCrematorium is ERC721URIStorage, ERC721Enumerable, Ownable {
      */
     function tokenURI(uint256 tokenId) public view virtual override (ERC721, ERC721URIStorage) returns (string memory) {
         return super.tokenURI(tokenId);
+    }
+
+    /**
+     * @dev Sets `_tokenURI` as the tokenURI of `tokenId`.
+     *
+     * Requirements:
+     *
+     * - `tokenId` must exist.
+     */
+    function setTokenURI(uint256 tokenId, string memory _tokenURI) public onlyOwner {
+        super._setTokenURI(tokenId, _tokenURI);
     }
 
     /**
