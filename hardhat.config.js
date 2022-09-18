@@ -5,7 +5,7 @@ require('hardhat-abi-exporter');
 require('@nomiclabs/hardhat-etherscan');
 require('@nomiclabs/hardhat-web3');
 
-const { alchemyApiKey, privateKey, etherscanApiKey } = require('./secrets.json');
+const { alchemyApiKey, privateKey, bscApiKey } = require('./secrets.json');
 
 /**
  * @type import('hardhat/config').HardhatUserConfig
@@ -24,6 +24,16 @@ module.exports = {
     hardhat: {
       initialBaseFeePerGas: 1,
     },
+    mainnet: {
+      url: `https://eth-mainnet.alchemyapi.io/v2/${alchemyApiKey}`,
+      accounts: [`0x${privateKey}`]
+    },
+    bsc: {
+      url: "https://bsc-dataseed.binance.org/",
+      chainId: 56,
+      gasPrice: 20000000000,
+      accounts: [`0x${privateKey}`]
+    },
     rinkeby: {
       url: `https://eth-rinkeby.alchemyapi.io/v2/${alchemyApiKey}`,
       accounts: [`0x${privateKey}`]
@@ -39,12 +49,12 @@ module.exports = {
     path: './src/contracts/abi',
     clear: true,
     flat: true,
-    only: [],
+    only: ['NFTCrematorium'],
     spacing: 2,
   },
   etherscan: {
     apiKey: {
-      rinkeby: etherscanApiKey
+      bsc: bscApiKey
     }
   },
 };
