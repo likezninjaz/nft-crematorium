@@ -8,12 +8,12 @@ export default class Document extends NextDocument {
           <meta name="title" content="NFT Crematorium" />
           <meta
             name="description"
-            content="You don't know what to do with all those NFTs you bought? Cremate them!"
+            content="You don't know what to do with NFTs you bought? Cremate them!"
           />
           <meta property="og:title" content="NFT Crematorium" />
           <meta
             property="og:description"
-            content="You don't know what to do with all those NFTs you bought? Cremate them!"
+            content="You don't know what to do with NFTs you bought? Cremate them!"
           />
           <meta property="og:url" content="https://www.nft-crematorium.com" />
           <meta property="og:type" content="website" />
@@ -26,7 +26,7 @@ export default class Document extends NextDocument {
           <meta property="twitter:title" content="NFT Crematorium" />
           <meta
             property="twitter:description"
-            content="You don't know what to do with all those NFTs you bought? Cremate them!"
+            content="You don't know what to do with NFTs you bought? Cremate them!"
           />
           <meta property="twitter:image" content="/logo.png" />
           <link rel="shortcut icon" href="/favicon.png" />

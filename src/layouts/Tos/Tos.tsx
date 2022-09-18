@@ -7,7 +7,7 @@ import { Container } from './Tos.styled';
 export const Tos = () => (
   <>
     <Head>
-      <title>NFT Creamatorium: Terms of service</title>
+      <title>NFT Crematorium: Terms of service</title>
     </Head>
     <Container>
       <Typography variant="h1">TERMS OF SERVICE</Typography>
@@ -17,16 +17,16 @@ export const Tos = () => (
       </Typography>
       <Typography>
         These Terms of Use constitute a legally binding agreement made between
-        you, whether personally or on behalf of an entity ("you") and Evgenii
-        Studitskikh, doing business as NFT Crematorium ("Crematorium", "we", "
-        us", or "our'), concerning your access to and use of the
-        https://nft-crematorium.com website as well as any other media form,
-        media channel, mobile website or mobile application related, linked, or
-        otherwise connected thereto (collectively, the "Site"). You agree that
-        by accessing the Site, you have read, understood, and agree to be bound
-        by all of these Terms of Use. IF YOU DO NOT AGREE WITH ALL OF THESE
-        TERMS OF USE, THEN YOU ARE EXPRESSLY PROHIBITED FROM USING THE SITE AND
-        YOU MUST DISCONTINUE USE IMMEDIATELY.
+        you, whether personally or on behalf of an entity ("you") and NFT
+        Crematorium ("Crematorium", "we", " us", or "our'), concerning your
+        access to and use of the https://nft-crematorium.com website as well as
+        any other media form, media channel, mobile website or mobile
+        application related, linked, or otherwise connected thereto
+        (collectively, the "Site"). You agree that by accessing the Site, you
+        have read, understood, and agree to be bound by all of these Terms of
+        Use. IF YOU DO NOT AGREE WITH ALL OF THESE TERMS OF USE, THEN YOU ARE
+        EXPRESSLY PROHIBITED FROM USING THE SITE AND YOU MUST DISCONTINUE USE
+        IMMEDIATELY.
       </Typography>
       <Typography typographyStyle={{ margin: '10px 0' }}>
         Supplemental terms and conditions or documents that may be posted on the

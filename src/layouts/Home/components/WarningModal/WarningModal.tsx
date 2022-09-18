@@ -7,7 +7,7 @@ import { useAuth } from 'hooks';
 import ERC721Abi from 'contracts/ERC721.json';
 
 import { SuccessfulModal } from '../SuccessfulModal';
-import { TNft } from '../../types';
+import { TNft } from '../../../../@types/nft';
 
 import { Wrapper } from './WarningModal.styled';
 
@@ -15,12 +15,14 @@ type TWarningModal = {
   isOpen: boolean;
   onClose: () => void;
   selectedNfts: Array<TNft>;
+  onCremate: () => void;
 };
 
 export const WarningModal = ({
   isOpen,
   onClose,
   selectedNfts,
+  onCremate,
 }: TWarningModal) => {
   const [isSuccessfulModalOpen, setSuccessfulModalOpen] = useToggle(false);
   const { account, web3 } = useAuth();
@@ -38,18 +40,22 @@ export const WarningModal = ({
         }
       );
 
+      // TODO: add the creamation animation based on https://codepen.io/jkantner/pen/gKRKKb
+
       await contract.methods
         .transferFrom(
           account,
-          process.env.NEXT_PUBLIC_CREMATORIUM_ADDRESS, // TODO: change to the contract method call
+          process.env.NEXT_PUBLIC_CREMATORIUM_ADDRESS,
           Number(selectedNfts[i].tokenId)
         )
         .send();
     }
+
+    onCremate();
     setSuccessfulModalOpen(true);
     setIsLoading(false);
     onClose();
-  }, [account, onClose, selectedNfts, setSuccessfulModalOpen, web3]);
+  }, [account, onClose, onCremate, selectedNfts, setSuccessfulModalOpen, web3]);
 
   return (
     <>

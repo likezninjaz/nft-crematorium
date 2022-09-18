@@ -9,7 +9,7 @@ export const StyledHome = styled.div<{ hasFooter: boolean }>`
   justify-content: center;
   height: 100%;
   margin: auto;
-  padding: ${({ hasFooter }) => (hasFooter ? '0 20px 100px' : '0 20px')};
+  padding: 0 20px;
   text-align: center;
   user-select: none;
 
@@ -37,17 +37,23 @@ export const NftsWrapper = styled.div`
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  margin-top: 20px;
+  margin: 20px 0 50px;
 `;
 
 export const NftsItem = styled.div<{ selected?: boolean }>`
   position: relative;
   margin: 10px;
-  width: 250px;
-  height: 300px;
-  border-radius: 4px;
-  opacity: ${({ selected }) => (selected ? 1 : 0.4)};
+  width: 350px;
+  height: 400px;
+  box-shadow: ${({ selected }) =>
+    selected ? 'rgba(0, 0, 0, 0.2) 0px 0px 10px' : 'none'};
+  background-color: ${({ theme }) => theme.colors.white};
+  transition: box-shadow 0.3s ease;
   cursor: pointer;
+
+  &:hover {
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 10px;
+  }
 
   @media (max-width: ${({ theme }) => theme.media.mobile}) {
     width: 100%;
@@ -58,20 +64,17 @@ export const NftsItem = styled.div<{ selected?: boolean }>`
 export const ImageWrapper = styled.div<{ selected: boolean }>`
   position: relative;
   overflow: hidden;
-  height: 250px;
-  box-shadow: ${({ selected }) =>
-    selected ? 'rgb(0 0 0 / 8%) 0px 4px 15px' : 'none'};
+  height: 350px;
 
-  &::after {
-    content: '';
-    position: absolute;
-    display: ${({ selected }) => (selected ? 'block' : 'none')};
-    bottom: 0;
-    right: -50px;
-    width: 250px;
-    height: 30px;
-    background: ${({ theme }) => theme.colors.black};
-    transform: rotate(-45deg);
+  img {
+    transition: all 0.3s ease;
+    filter: ${({ selected }) =>
+      selected ? 'grayscale(0)' : 'grayscale(100%)'};
+
+    &:hover {
+      transition: all 0.3s ease;
+      transform: scale(1.05);
+    }
   }
 
   @media (max-width: ${({ theme }) => theme.media.mobile}) {
