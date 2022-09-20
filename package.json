@@ -5,7 +5,9 @@
     "build": "next build",
     "start": "next start",
     "test-contracts": "hardhat test && hardhat size-contracts",
+    "now-build": "yum install libuuid-devel libmount-devel && cp /lib64/{libuuid,libmount,libblkid}.so.1 node_modules/canvas/build/Release/ && npm run build",
     "deploy-contract-testnet": "hardhat run --network bsc src/contracts/scripts/deploy-testnet.js",
+    "deploy": "now",
     "lint": "eslint \"**/*.{ts,tsx}\" --fix"
   },
   "dependencies": {
@@ -20,7 +22,7 @@
     "axios": "^0.24.0",
     "body-scroll-lock": "^4.0.0-beta.0",
     "caniuse-lite": "^1.0.30001388",
-    "canvas": "2.8.0",
+    "canvas": "2.6.1",
     "dayjs": "^1.10.7",
     "dotenv": "^10.0.0",
     "dotenv-load": "^2.0.0",
