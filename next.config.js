@@ -1,3 +1,9 @@
+const nextEnv = require('next-env');
+const dotEnvLoad = require('dotenv-load');
+
+dotEnvLoad();
+const withNextEnv = nextEnv();
+
 // For building on vercel: https://github.com/Automattic/node-canvas/issues/1779
 if (
   process.env.LD_LIBRARY_PATH == null ||
@@ -9,11 +15,5 @@ if (
     process.env.PWD
   }/node_modules/canvas/build/Release:${process.env.LD_LIBRARY_PATH || ''}`;
 }
-
-const nextEnv = require('next-env');
-const dotEnvLoad = require('dotenv-load');
-
-dotEnvLoad();
-const withNextEnv = nextEnv();
 
 module.exports = withNextEnv();
