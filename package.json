@@ -5,7 +5,7 @@
     "build": "next build",
     "start": "next start",
     "test-contracts": "hardhat test && hardhat size-contracts",
-    "vercel-build": "yum install libuuid-devel libmount-devel && cp /lib64/{libuuid,libmount,libblkid}.so.1 node_modules/canvas/build/Release/",
+    "vercel-build": "yum install libuuid-devel libmount-devel && cp /lib64/{libuuid,libmount,libblkid}.so.1 node_modules/canvas/build/Release/ && next build",
     "deploy-contract-testnet": "hardhat run --network bsc src/contracts/scripts/deploy-testnet.js",
     "lint": "eslint \"**/*.{ts,tsx}\" --fix"
   },
