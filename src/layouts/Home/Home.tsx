@@ -10,6 +10,7 @@ import { TNft } from '@types';
 
 import {
   BurnWrapper,
+  Description,
   ImageWrapper,
   NftsItem,
   NftsWrapper,
@@ -18,11 +19,12 @@ import {
 import { WarningModal } from './components';
 
 export const Home = () => {
-  const { account, chainId } = useAuth();
+  const { account, chainId, login } = useAuth();
   const [isWarningModalOpen, setWarningModalOpen] = useToggle(false);
   const [nfts, { addToEnd, clear }] = useItems<TNft>([]);
   const [selectedNfts, setSelectedNfts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const wrongChainId = ![1, 56].includes(chainId);
 
   const handleSelectNft = useCallback(
     (nft: TNft) => () => {
@@ -75,9 +77,9 @@ export const Home = () => {
   }, [account, addToEnd, chainId, clear]);
 
   useEffect(() => {
-    if (account) getNfts();
+    if (account && !wrongChainId) getNfts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [account]);
+  }, [account, chainId]);
 
   return (
     <>
@@ -87,36 +89,37 @@ export const Home = () => {
       <StyledHome hasFooter={selectedNfts.length > 0}>
         {nfts.length === 0 && (
           <>
-            <Typography
-              variant="h1"
-              typographyStyle={{ marginTop: 10, cursor: 'default' }}
-            >
-              {loading && account ? (
-                <Loader />
-              ) : (
-                <Typography
-                  variant="h2"
-                  typographyStyle={{ cursor: 'default' }}
-                >
-                  {account ? (
-                    <>
-                      Seems that you don't have any NFT yet.
-                      <br />
-                      <a
-                        href="https://opensea.io/"
-                        target="_blank"
-                        style={{ textDecoration: 'underline' }}
-                      >
-                        Get some NFTs
-                      </a>{' '}
-                      to cremate them.
-                    </>
-                  ) : (
-                    'Connect your wallet to start the cremation of your NFTs'
-                  )}
-                </Typography>
-              )}
-            </Typography>
+            {loading && account ? (
+              <Loader />
+            ) : (
+              <>
+                {account ? (
+                  <Description>
+                    {wrongChainId ? (
+                      <>
+                        The current network is not supported. Please switch to
+                        ETH or BSC mainnet
+                      </>
+                    ) : (
+                      <>
+                        Seems that you don't have any NFT yet.
+                        <br />
+                        <a
+                          href="https://opensea.io/"
+                          target="_blank"
+                          style={{ textDecoration: 'underline' }}
+                        >
+                          Get some NFTs
+                        </a>{' '}
+                        to cremate them.
+                      </>
+                    )}
+                  </Description>
+                ) : (
+                  <Button onClick={login}>CONNECT</Button>
+                )}
+              </>
+            )}
           </>
         )}
         {nfts.length > 0 && (

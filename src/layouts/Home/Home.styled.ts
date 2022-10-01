@@ -18,6 +18,13 @@ export const StyledHome = styled.div<{ hasFooter: boolean }>`
   }
 `;
 
+export const Description = styled.div`
+  font-size: 20px;
+  line-height: 24px;
+  font-family: 'Satoshi-Medium';
+  cursor: default;
+`;
+
 export const Introducing = styled(Typography)`
   margin-top: 45px;
   color: ${({ theme }) => theme.colors.grayLight};

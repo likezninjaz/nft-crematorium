@@ -10,7 +10,6 @@ import {
   useState,
 } from 'react';
 import WalletConnectProvider from '@walletconnect/web3-provider';
-import { useMount } from 'react-use';
 import { useRouter } from 'next/router';
 
 import { HOME_PAGE_ROUTE } from 'routes';
@@ -85,36 +84,40 @@ export const withAuth = <
       push(HOME_PAGE_ROUTE);
     }, [provider, push, web3Modal]);
 
-    const login = useCallback(
-      async (web3ModalInstance?: Web3Modal) => {
-        try {
-          const provider = await (web3ModalInstance || web3Modal).connect();
+    const login = useCallback(async () => {
+      try {
+        const web3ModalInstance = new Web3Modal({
+          cacheProvider: true,
+          providerOptions,
+          disableInjectedProvider: false,
+        });
+        setWeb3Modal(web3ModalInstance);
 
-          setProvider(provider);
+        const provider = await (web3ModalInstance || web3Modal).connect();
 
-          // Subscribe to accounts change
-          provider.on('accountsChanged', () => {
-            fetchAccountData(provider);
-          });
+        setProvider(provider);
 
-          // Subscribe to chainId change
-          provider.on('chainChanged', () => {
-            fetchAccountData(provider);
-          });
+        // Subscribe to accounts change
+        provider.on('accountsChanged', () => {
+          fetchAccountData(provider);
+        });
 
-          // Subscribe to networkId change
-          provider.on('networkChanged', () => {
-            fetchAccountData(provider);
-          });
+        // Subscribe to chainId change
+        provider.on('chainChanged', () => {
+          fetchAccountData(provider);
+        });
 
-          await fetchAccountData(provider);
-        } catch (e) {
-          // show error
-          return;
-        }
-      },
-      [web3Modal]
-    );
+        // Subscribe to networkId change
+        provider.on('networkChanged', () => {
+          fetchAccountData(provider);
+        });
+
+        await fetchAccountData(provider);
+      } catch (e) {
+        // show error
+        return;
+      }
+    }, [web3Modal]);
 
     const ctx = useMemo<TAuthContext>(
       () => ({
@@ -128,17 +131,6 @@ export const withAuth = <
       }),
       [account, chainId, login, logout, provider, web3, web3Modal]
     );
-
-    useMount(() => {
-      const web3ModalInstance = new Web3Modal({
-        cacheProvider: true,
-        providerOptions,
-        disableInjectedProvider: false,
-      });
-      setWeb3Modal(web3ModalInstance);
-
-      login(web3ModalInstance);
-    });
 
     return (
       <AuthContext.Provider value={ctx}>
